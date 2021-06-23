@@ -41,15 +41,14 @@
             this.mnuSortNameReverse = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSortCount = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSortCountReverse = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSortIndex = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSortIndexReverse = new System.Windows.Forms.ToolStripMenuItem();
             this.giveMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.giveAll = new System.Windows.Forms.ToolStripMenuItem();
             this.giveNone = new System.Windows.Forms.ToolStripMenuItem();
             this.giveModify = new System.Windows.Forms.ToolStripMenuItem();
             this.L_Count = new System.Windows.Forms.Label();
             this.NUD_Count = new System.Windows.Forms.NumericUpDown();
-            this.CHK_NEW = new System.Windows.Forms.CheckBox();
-            this.mnuSortIndex = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSortIndexReverse = new System.Windows.Forms.ToolStripMenuItem();
             this.sortMenu.SuspendLayout();
             this.giveMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_Count)).BeginInit();
@@ -92,7 +91,7 @@
             // 
             // IL_Pouch
             // 
-            this.IL_Pouch.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("IL_Pouch.ImageStream")));
+            this.IL_Pouch.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject($"IL_Pouch.ImageStream")));
             this.IL_Pouch.TransparentColor = System.Drawing.Color.Transparent;
             this.IL_Pouch.Images.SetKeyName(0, "Bag_Items.png");
             this.IL_Pouch.Images.SetKeyName(1, "Bag_Key.png");
@@ -105,6 +104,9 @@
             this.IL_Pouch.Images.SetKeyName(8, "Bag_PCItems.png");
             this.IL_Pouch.Images.SetKeyName(9, "Bag_Free.png");
             this.IL_Pouch.Images.SetKeyName(10, "Bag_Z.png");
+            this.IL_Pouch.Images.SetKeyName(11, "Bag_Candy.png");
+            this.IL_Pouch.Images.SetKeyName(12, "Bag_Treasure.png");
+            this.IL_Pouch.Images.SetKeyName(13, "Bag_Ingredient.png");
             // 
             // B_GiveAll
             // 
@@ -139,10 +141,11 @@
             this.mnuSortIndex,
             this.mnuSortIndexReverse});
             this.sortMenu.Name = "modifyMenu";
-            this.sortMenu.Size = new System.Drawing.Size(159, 158);
+            this.sortMenu.Size = new System.Drawing.Size(159, 136);
             // 
             // mnuSortName
             // 
+            this.mnuSortName.Image = global::PKHeX.WinForms.Properties.Resources.alphaAZ;
             this.mnuSortName.Name = "mnuSortName";
             this.mnuSortName.Size = new System.Drawing.Size(158, 22);
             this.mnuSortName.Text = "Name";
@@ -150,6 +153,7 @@
             // 
             // mnuSortNameReverse
             // 
+            this.mnuSortNameReverse.Image = global::PKHeX.WinForms.Properties.Resources.alphaZA;
             this.mnuSortNameReverse.Name = "mnuSortNameReverse";
             this.mnuSortNameReverse.Size = new System.Drawing.Size(158, 22);
             this.mnuSortNameReverse.Text = "Name (Reverse)";
@@ -157,6 +161,7 @@
             // 
             // mnuSortCount
             // 
+            this.mnuSortCount.Image = global::PKHeX.WinForms.Properties.Resources.numlohi;
             this.mnuSortCount.Name = "mnuSortCount";
             this.mnuSortCount.Size = new System.Drawing.Size(158, 22);
             this.mnuSortCount.Text = "Count";
@@ -164,10 +169,27 @@
             // 
             // mnuSortCountReverse
             // 
+            this.mnuSortCountReverse.Image = global::PKHeX.WinForms.Properties.Resources.numhilo;
             this.mnuSortCountReverse.Name = "mnuSortCountReverse";
             this.mnuSortCountReverse.Size = new System.Drawing.Size(158, 22);
             this.mnuSortCountReverse.Text = "Count (Reverse)";
             this.mnuSortCountReverse.Click += new System.EventHandler(this.SortByCount);
+            // 
+            // mnuSortIndex
+            // 
+            this.mnuSortIndex.Image = global::PKHeX.WinForms.Properties.Resources.numlohi;
+            this.mnuSortIndex.Name = "mnuSortIndex";
+            this.mnuSortIndex.Size = new System.Drawing.Size(158, 22);
+            this.mnuSortIndex.Text = "Index";
+            this.mnuSortIndex.Click += new System.EventHandler(this.SortByIndex);
+            // 
+            // mnuSortIndexReverse
+            // 
+            this.mnuSortIndexReverse.Image = global::PKHeX.WinForms.Properties.Resources.numhilo;
+            this.mnuSortIndexReverse.Name = "mnuSortIndexReverse";
+            this.mnuSortIndexReverse.Size = new System.Drawing.Size(158, 22);
+            this.mnuSortIndexReverse.Text = "Index (Reverse)";
+            this.mnuSortIndexReverse.Click += new System.EventHandler(this.SortByIndex);
             // 
             // giveMenu
             // 
@@ -180,6 +202,7 @@
             // 
             // giveAll
             // 
+            this.giveAll.Image = global::PKHeX.WinForms.Properties.Resources.database;
             this.giveAll.Name = "giveAll";
             this.giveAll.Size = new System.Drawing.Size(112, 22);
             this.giveAll.Text = "All";
@@ -187,6 +210,7 @@
             // 
             // giveNone
             // 
+            this.giveNone.Image = global::PKHeX.WinForms.Properties.Resources.open;
             this.giveNone.Name = "giveNone";
             this.giveNone.Size = new System.Drawing.Size(112, 22);
             this.giveNone.Text = "None";
@@ -194,6 +218,7 @@
             // 
             // giveModify
             // 
+            this.giveModify.Image = global::PKHeX.WinForms.Properties.Resources.settings;
             this.giveModify.Name = "giveModify";
             this.giveModify.Size = new System.Drawing.Size(112, 22);
             this.giveModify.Text = "Modify";
@@ -227,39 +252,11 @@
             0,
             0});
             // 
-            // CHK_NEW
-            // 
-            this.CHK_NEW.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.CHK_NEW.AutoSize = true;
-            this.CHK_NEW.Checked = true;
-            this.CHK_NEW.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CHK_NEW.Location = new System.Drawing.Point(148, 384);
-            this.CHK_NEW.Name = "CHK_NEW";
-            this.CHK_NEW.Size = new System.Drawing.Size(75, 17);
-            this.CHK_NEW.TabIndex = 22;
-            this.CHK_NEW.Text = "Flag NEW";
-            this.CHK_NEW.UseVisualStyleBackColor = true;
-            // 
-            // mnuSortIndex
-            // 
-            this.mnuSortIndex.Name = "mnuSortIndex";
-            this.mnuSortIndex.Size = new System.Drawing.Size(158, 22);
-            this.mnuSortIndex.Text = "Index";
-            this.mnuSortIndex.Click += new System.EventHandler(this.SortByIndex);
-            // 
-            // mnuSortIndexReverse
-            // 
-            this.mnuSortIndexReverse.Name = "mnuSortIndexReverse";
-            this.mnuSortIndexReverse.Size = new System.Drawing.Size(158, 22);
-            this.mnuSortIndexReverse.Text = "Index (Reverse)";
-            this.mnuSortIndexReverse.Click += new System.EventHandler(this.SortByIndex);
-            // 
             // SAV_Inventory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(314, 411);
-            this.Controls.Add(this.CHK_NEW);
             this.Controls.Add(this.NUD_Count);
             this.Controls.Add(this.L_Count);
             this.Controls.Add(this.B_Sort);
@@ -267,7 +264,7 @@
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.B_Save);
             this.Controls.Add(this.B_Cancel);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::PKHeX.WinForms.Properties.Resources.Icon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(330, 450);
@@ -299,7 +296,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuSortCount;
         private System.Windows.Forms.Label L_Count;
         private System.Windows.Forms.NumericUpDown NUD_Count;
-        private System.Windows.Forms.CheckBox CHK_NEW;
         private System.Windows.Forms.ToolStripMenuItem giveModify;
         private System.Windows.Forms.ToolStripMenuItem mnuSortIndex;
         private System.Windows.Forms.ToolStripMenuItem mnuSortIndexReverse;

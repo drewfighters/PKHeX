@@ -8,22 +8,23 @@ namespace PKHeX.WinForms
     {
         private readonly SaveFile Origin;
         private readonly SaveFile SAV;
+
         public SAV_SimplePokedex(SaveFile sav)
         {
-            SAV = (Origin = sav).Clone();
             InitializeComponent();
             WinFormsUtil.TranslateInterface(this, Main.CurrentLanguage);
+            SAV = (Origin = sav).Clone();
             seen = new bool[SAV.MaxSpeciesID];
             caught = new bool[SAV.MaxSpeciesID];
 
-            string[] spec = Util.GetSpeciesList(Main.CurrentLanguage);
+            var speciesNames = GameInfo.Strings.specieslist;
             for (int i = 0; i < seen.Length; i++)
             {
                 int species = i + 1;
                 seen[i] = SAV.GetSeen(species);
                 caught[i] = SAV.GetCaught(species);
-                CLB_Seen.Items.Add(spec[species]);
-                CLB_Caught.Items.Add(spec[species]);
+                CLB_Seen.Items.Add(speciesNames[species]);
+                CLB_Caught.Items.Add(speciesNames[species]);
                 CLB_Seen.SetItemChecked(i, seen[i]);
                 CLB_Caught.SetItemChecked(i, caught[i]);
             }
@@ -42,7 +43,7 @@ namespace PKHeX.WinForms
                 SAV.SetSeen(species, seen[i]);
                 SAV.SetCaught(species, caught[i]);
             }
-            Origin.SetData(SAV.Data, 0);
+            Origin.CopyChangesFrom(SAV);
             Close();
         }
 

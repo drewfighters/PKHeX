@@ -4,53 +4,59 @@ using PKHeX.Core;
 
 namespace PKHeX.WinForms.Controls
 {
-    public partial class ContestStat : UserControl
+    public partial class ContestStat : UserControl, IContestStats, IContestStatsMutable
     {
         public ContestStat()
         {
             InitializeComponent();
         }
 
-        public int Sheen
+        public byte CNT_Cool
         {
-            get => Util.ToInt32(TB_Sheen.Text);
-            set => TB_Sheen.Text = value.ToString();
-        }
-        public int Cool
-        {
-            get => Util.ToInt32(TB_Cool.Text);
+            get => (byte)Util.ToInt32(TB_Cool.Text);
             set => TB_Cool.Text = value.ToString();
         }
-        public int Beauty
+
+        public byte CNT_Beauty
         {
-            get => Util.ToInt32(TB_Beauty.Text);
+            get => (byte)Util.ToInt32(TB_Beauty.Text);
             set => TB_Beauty.Text = value.ToString();
         }
-        public int Cute
+
+        public byte CNT_Cute
         {
-            get => Util.ToInt32(TB_Cute.Text);
+            get => (byte)Util.ToInt32(TB_Cute.Text);
             set => TB_Cute.Text = value.ToString();
         }
-        public int Smart
+
+        public byte CNT_Smart
         {
-            get => Util.ToInt32(TB_Smart.Text);
+            get => (byte)Util.ToInt32(TB_Smart.Text);
             set => TB_Smart.Text = value.ToString();
         }
-        public int Tough
+
+        public byte CNT_Tough
         {
-            get => Util.ToInt32(TB_Tough.Text);
+            get => (byte)Util.ToInt32(TB_Tough.Text);
             set => TB_Tough.Text = value.ToString();
         }
+
+        public byte CNT_Sheen
+        {
+            get => (byte)Util.ToInt32(TB_Sheen.Text);
+            set => TB_Sheen.Text = value.ToString();
+        }
+
         private void Update255_MTB(object sender, EventArgs e)
         {
-            if (!(sender is MaskedTextBox tb)) return;
+            if (sender is not MaskedTextBox tb) return;
             if (Util.ToInt32(tb.Text) > byte.MaxValue)
                 tb.Text = "255";
         }
 
-        public void ToggleInterface(int gen)
+        public void ToggleInterface(object o, int gen = PKX.Generation)
         {
-            if (gen < 3)
+            if (o is not IContestStats)
             {
                 Visible = false;
                 return;

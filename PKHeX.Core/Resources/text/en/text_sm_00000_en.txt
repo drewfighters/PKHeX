@@ -31,7 +31,7 @@ Plank Bridge
 Ruins of Conflict
 
 Ruins of Conflict
-[~ 33]
+
 Ten Carat Hill
 
 Ten Carat Hill
@@ -78,7 +78,7 @@ Memorial Hill
 
 Paniola Ranch
 
-[~ 80]
+
 
 Wela Volcano Park
 
@@ -94,10 +94,10 @@ Ruins of Life
 
 Akala Outskirts
 
-[~ 96]
-[~ 97]
-[~ 98]
-[~ 99]
+
+
+
+
 Diglett’s Tunnel
 
 Hano Grand Resort
@@ -108,7 +108,7 @@ Route 10
 
 Route 11
 
-Secluded Shore
+Ula’ula Beach
 
 Route 13
 
@@ -188,7 +188,46 @@ Battle Tree
 
 Aether Paradise
 
-Ultra Space
+Ultra Deep Sea
 
 Malie City
 Outer Cape
+Melemele
+Akala
+Ula’ula
+Poni
+Big Wave Beach
+
+Sandy Cave
+
+Heahea Beach
+
+Poni Beach
+
+Ultra Megalopolis
+
+Megalo Tower
+
+Ultra Plant
+
+Ultra Crater
+
+Ultra Desert
+
+Ultra Forest
+
+Ultra Jungle
+
+Ultra Ruin
+
+Ultra Space Wilds
+
+Team Rocket’s Castle
+
+Plains Grotto
+
+Pikachu Valley
+
+Route 1
+Trainers’ School
+Dividing Peak Tunnel

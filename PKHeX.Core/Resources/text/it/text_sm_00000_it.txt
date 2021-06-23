@@ -31,7 +31,7 @@ Ponte Sospeso
 Tempio del Conflitto
 
 Tempio del Conflitto
-[~ 33]
+
 Collina Diecicarati
 
 Collina Diecicarati
@@ -78,7 +78,7 @@ Colle della Memoria
 
 Fattoria Ohana
 
-[~ 80]
+
 
 Parco Vulcano Wela
 
@@ -94,10 +94,10 @@ Tempio della Vita
 
 Punta Akala
 
-[~ 96]
-[~ 97]
-[~ 98]
-[~ 99]
+
+
+
+
 Tunnel Diglett
 
 Resort Hanu Hanu
@@ -108,7 +108,7 @@ Percorso 10
 
 Percorso 11
 
-Lido di Ula Ula
+Spiaggia di Ula Ula
 
 Percorso 13
 
@@ -188,7 +188,46 @@ Albero della Lotta
 
 Æther Paradise
 
-Ultramondo
+Ultrabisso
 
 Malie
 Promontorio di Malie
+Mele Mele
+Akala
+Ula Ula
+Poni
+Spiaggia Big Wave
+
+Caverna Costiera
+
+Spiaggia di Kantai
+
+Spiaggia di Poni
+
+Ultramegalopoli
+
+Torre Megalopoli
+
+Ultracentrale
+
+Ultravalle
+
+Ultradeserto
+
+Ultraforesta
+
+Ultragiungla
+
+Ultragglomerato
+
+Ultramondo Ignoto
+
+Castello Team Rocket
+
+Grotta Prateria
+
+Valle dei Pikachu
+
+Percorso 1
+Scuola Allenatori
+Tunnel del Vulcano

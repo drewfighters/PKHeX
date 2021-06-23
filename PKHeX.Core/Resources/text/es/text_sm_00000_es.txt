@@ -31,7 +31,7 @@ Puente Colgante
 Ruinas de la Guerra
 
 Ruinas de la Guerra
-[~ 33]
+
 Colina Dequilate
 
 Colina Dequilate
@@ -78,7 +78,7 @@ Colina del Recuerdo
 
 Rancho Ohana
 
-[~ 80]
+
 
 Área Volcánica Wela
 
@@ -94,10 +94,10 @@ Ruinas de la Vida
 
 Afueras de Akala
 
-[~ 96]
-[~ 97]
-[~ 98]
-[~ 99]
+
+
+
+
 Túnel Diglett
 
 Resort Hanohano
@@ -108,7 +108,7 @@ Ruta 10
 
 Ruta 11
 
-Playa Menor
+Playa de Ula-Ula
 
 Ruta 13
 
@@ -188,7 +188,46 @@ Isla Exeggutor
 
 Paraíso Æther
 
-Ultraespacio
+Ultraabismo
 
 Ciudad Malíe
 Cabo de las Afueras
+Melemele
+Akala
+Ula-Ula
+Poni
+Playa Big Wave
+
+Cueva Costera
+
+Playa de Kantai
+
+Playa de Poni
+
+Ultrópolis
+
+Torre Ultrópolis
+
+Ultragenerador
+
+Ultravalle
+
+Ultradesierto
+
+Ultrabosque
+
+Ultrajungla
+
+Ultraurbe
+
+Ultraespacio Cero
+
+Castillo Team Rocket
+
+Gruta de la Llanura
+
+Valle de los Pikachu
+
+Ruta 1
+Escuela Entrenadores
+Túnel del Volcán

@@ -1,40 +1,50 @@
-﻿namespace PKHeX.Core
+﻿using System;
+using static PKHeX.Core.GameVersion;
+
+namespace PKHeX.Core
 {
-    public class FrameGenerator
+    /// <summary>
+    /// Generator class for Gen3/4 Frame patterns
+    /// </summary>
+    public sealed class FrameGenerator
     {
-        public uint Nature;
+        public uint Nature { get; init; }
         public readonly bool Gendered;
         public readonly int GenderHigh;
         public readonly int GenderLow;
         public readonly bool DPPt;
         public readonly bool AllowLeads;
-        public readonly FrameType FrameType = FrameType.None;
-        public readonly RNG RNG;
-        public Frame GetFrame(uint seed, LeadRequired lead) => new Frame(seed, FrameType, RNG, lead);
-        public Frame GetFrame(uint seed, LeadRequired lead, uint esv) => new Frame(seed, FrameType, RNG, lead) {ESV = esv};
+        public readonly FrameType FrameType;
+        public readonly RNG RNG = RNG.LCRNG;
+        public readonly bool Safari3;
+
+        public Frame GetFrame(uint seed, LeadRequired lead) => new(seed, FrameType, lead);
+        public Frame GetFrame(uint seed, LeadRequired lead, uint esv, uint origin) => GetFrame(seed, lead, esv, esv, origin);
+
+        public Frame GetFrame(uint seed, LeadRequired lead, uint esv, uint lvl, uint origin) => new(seed, FrameType, lead)
+        {
+            RandESV = esv,
+            RandLevel = lvl,
+            OriginSeed = origin,
+        };
 
         /// <summary>
-        /// Gets the Search Criteria parameters necessary for generating <see cref="SeedInfo"/> and <see cref="Frame"/> objects.
+        /// Gets the Search Criteria parameters necessary for generating <see cref="SeedInfo"/> and <see cref="Frame"/> objects for Gen3/4 mainline games.
         /// </summary>
-        /// <param name="pidiv">Info used to determine the <see cref="FrameType"/>.</param>
         /// <param name="pk"><see cref="PKM"/> object containing various accessible information required for the encounter.</param>
         /// <returns>Object containing search criteria to be passed by reference to search/filter methods.</returns>
-        public FrameGenerator(PIDIV pidiv, PKM pk)
+        public FrameGenerator(PKM pk)
         {
             var ver = (GameVersion)pk.Version;
             switch (ver)
             {
                 // Method H
-                case GameVersion.R:
-                case GameVersion.S:
-                case GameVersion.FR:
-                case GameVersion.LG:
-                case GameVersion.E:
+                case R or S or E or FR or LG:
                     DPPt = false;
                     FrameType = FrameType.MethodH;
-                    RNG = pidiv.RNG;
+                    Safari3 = pk.Ball == 5 && ver is not (FR or LG);
 
-                    if (ver != GameVersion.E)
+                    if (ver != E)
                         return;
 
                     AllowLeads = true;
@@ -52,23 +62,20 @@
                     return;
 
                 // Method J
-                case GameVersion.D:
-                case GameVersion.P:
-                case GameVersion.Pt:
+                case D or P or Pt:
                     DPPt = true;
                     AllowLeads = true;
                     FrameType = FrameType.MethodJ;
-                    RNG = pidiv.RNG;
                     return;
 
                 // Method K
-                case GameVersion.HG:
-                case GameVersion.SS:
+                case HG or SS:
                     DPPt = false;
                     AllowLeads = true;
                     FrameType = FrameType.MethodK;
-                    RNG = pidiv.RNG;
                     return;
+                default:
+                    throw new ArgumentException(nameof(ver));
             }
         }
 
@@ -79,16 +86,15 @@
         /// <param name="ratio">Gender Ratio</param>
         /// <param name="max">Return Max (or Min)</param>
         /// <returns>Returns the maximum or minimum gender value that corresponds to the input gender ratio.</returns>
-        private static int GetGenderMinMax(int gender, int ratio, bool max)
+        private static int GetGenderMinMax(int gender, int ratio, bool max) => ratio switch
         {
-            if (ratio == 0 || ratio == 0xFE || ratio == 0xFF)
-                gender = 2;
-            switch (gender)
+            0 or >254 => max ? 255 : 0,
+            _ => gender switch
             {
-                case 0: return max ? 255 : ratio; // male
-                case 1: return max ? ratio - 1 : 0; // female
-                default: return max ? 255 : 0; // fixed/genderless
+                0 => max ? 255 : ratio, // male
+                1 => max ? ratio - 1 : 0, // female
+                _ => max ? 255 : 0,
             }
-        }
+        };
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using PKHeX.Core;
 
@@ -10,24 +9,27 @@ namespace PKHeX.WinForms
     public partial class TrashEditor : Form
     {
         private readonly SaveFile SAV;
+
+        public TrashEditor(TextBoxBase TB_NN, SaveFile sav) : this(TB_NN, Array.Empty<byte>(), sav) { }
+
         public TrashEditor(TextBoxBase TB_NN, byte[] raw, SaveFile sav)
         {
-            SAV = sav;
             InitializeComponent();
-            bigendian = new[] { GameVersion.COLO, GameVersion.XD, GameVersion.BATREV, }.Contains(SAV.Version);
             WinFormsUtil.TranslateInterface(this, Main.CurrentLanguage);
+            SAV = sav;
 
             FinalString = TB_NN.Text;
             Raw = FinalBytes = raw;
 
             editing = true;
-            if (raw != null)
+            if (raw.Length != 0)
                 AddTrashEditing(raw.Length);
 
-            AddCharEditing();
+            var f = FontUtil.GetPKXFont();
+            AddCharEditing(f);
             TB_Text.MaxLength = TB_NN.MaxLength;
             TB_Text.Text = TB_NN.Text;
-            TB_Text.Font = pkxFont;
+            TB_Text.Font = f;
 
             if (FLP_Characters.Controls.Count == 0)
             {
@@ -43,24 +45,23 @@ namespace PKHeX.WinForms
             editing = false;
             CenterToParent();
         }
-        
-        private readonly List<NumericUpDown> Bytes = new List<NumericUpDown>();
-        private readonly Font pkxFont = FontUtil.GetPKXFont(12F);
+
+        private readonly List<NumericUpDown> Bytes = new();
         public string FinalString;
-        public byte[] FinalBytes { get; private set; }
+        public byte[] FinalBytes;
         private readonly byte[] Raw;
         private bool editing;
-        private readonly bool bigendian;
         private void B_Cancel_Click(object sender, EventArgs e) => Close();
+
         private void B_Save_Click(object sender, EventArgs e)
         {
             FinalString = TB_Text.Text;
-            if (FinalBytes != null)
+            if (FinalBytes.Length == 0)
                 FinalBytes = Raw;
             Close();
         }
 
-        private void AddCharEditing()
+        private void AddCharEditing(Font f)
         {
             ushort[] chars = GetChars(SAV.Generation);
             if (chars.Length == 0)
@@ -69,25 +70,25 @@ namespace PKHeX.WinForms
             FLP_Characters.Visible = true;
             foreach (ushort c in chars)
             {
-                var l = GetLabel((char)c+"");
-                l.Font = pkxFont;
+                var l = GetLabel(((char)c).ToString());
+                l.Font = f;
                 l.AutoSize = false;
                 l.Size = new Size(20, 20);
                 l.Click += (s, e) => { if (TB_Text.Text.Length < TB_Text.MaxLength) TB_Text.AppendText(l.Text); };
                 FLP_Characters.Controls.Add(l);
             }
         }
+
         private void AddTrashEditing(int count)
         {
             FLP_Hex.Visible = true;
             GB_Trash.Visible = true;
             NUD_Generation.Value = SAV.Generation;
-            Font courier = new Font("Courier New", 8);
             for (int i = 0; i < count; i++)
             {
                 var l = GetLabel($"${i:X2}");
-                l.Font = courier;
-                var n = GetNUD(hex: true, min: 0, max: 255);
+                l.Font = NUD_Generation.Font;
+                var n = GetNUD(min: 0, max: 255, hex: true);
                 n.Click += (s, e) =>
                 {
                     switch (ModifierKeys)
@@ -97,25 +98,19 @@ namespace PKHeX.WinForms
                     }
                 };
                 n.Value = Raw[i];
-                n.ValueChanged += UpdateNUD;
-                
+                n.ValueChanged += (o, args) => UpdateNUD(n, args);
 
                 FLP_Hex.Controls.Add(l);
                 FLP_Hex.Controls.Add(n);
                 Bytes.Add(n);
             }
-            TB_Text.TextChanged += UpdateString;
+            TB_Text.TextChanged += (o, args) => UpdateString(TB_Text, args);
 
-            CB_Species.DisplayMember = "Text";
-            CB_Species.ValueMember = "Value";
+            CB_Species.InitializeBinding();
             CB_Species.DataSource = new BindingSource(GameInfo.SpeciesDataSource, null);
 
-            CB_Language.DisplayMember = "Text";
-            CB_Language.ValueMember = "Value";
-            var languages = Util.GetUnsortedCBList("languages");
-            if (SAV.Generation < 7)
-                languages = languages.Where(l => l.Value <= 8).ToList(); // Korean
-            CB_Language.DataSource = languages;
+            CB_Language.InitializeBinding();
+            CB_Language.DataSource = GameInfo.LanguageDataSource(SAV.Generation);
         }
 
         private void UpdateNUD(object sender, EventArgs e)
@@ -124,36 +119,38 @@ namespace PKHeX.WinForms
                 return;
             editing = true;
             // build bytes
-            var nud = sender as NumericUpDown;
+            if (sender is not NumericUpDown nud)
+                throw new Exception();
             int index = Bytes.IndexOf(nud);
             Raw[index] = (byte)nud.Value;
 
-            string str = PKX.GetString(Raw, SAV.Generation, SAV.Japanese, bigendian, Raw.Length);
-            TB_Text.Text = str;
+            TB_Text.Text = GetString();
             editing = false;
         }
+
         private void UpdateString(object sender, EventArgs e)
         {
             if (editing)
                 return;
             editing = true;
             // build bytes
-            byte[] data = PKX.SetString(TB_Text.Text, SAV.Generation, SAV.Japanese, bigendian, Raw.Length, SAV.Language);
+            byte[] data = SetString(TB_Text.Text);
             Array.Copy(data, Raw, Math.Min(data.Length, Raw.Length));
             for (int i = 0; i < Raw.Length; i++)
                 Bytes[i].Value = Raw[i];
             editing = false;
         }
+
         private void B_ApplyTrash_Click(object sender, EventArgs e)
         {
-            string species = PKX.GetSpeciesNameGeneration(WinFormsUtil.GetIndex(CB_Species),
+            string species = SpeciesName.GetSpeciesNameGeneration(WinFormsUtil.GetIndex(CB_Species),
                 WinFormsUtil.GetIndex(CB_Language), (int) NUD_Generation.Value);
 
-            if (species == "") // no result
+            if (string.IsNullOrEmpty(species)) // no result
                 species = CB_Species.Text;
 
-            byte[] current = PKX.SetString(TB_Text.Text, SAV.Generation, SAV.Japanese, bigendian, Raw.Length, SAV.Language);
-            byte[] data = PKX.SetString(species, SAV.Generation, SAV.Japanese, bigendian, Raw.Length, SAV.Language);
+            byte[] current = SetString(TB_Text.Text);
+            byte[] data = SetString(species);
             if (data.Length <= current.Length)
             {
                 WinFormsUtil.Alert("Trash byte layer is hidden by current text.",
@@ -168,16 +165,21 @@ namespace PKHeX.WinForms
             for (int i = current.Length; i < data.Length; i++)
                 Bytes[i].Value = data[i];
         }
+
         private void B_ClearTrash_Click(object sender, EventArgs e)
         {
-            byte[] current = PKX.SetString(TB_Text.Text, SAV.Generation, SAV.Japanese, bigendian, Raw.Length, SAV.Language);
+            byte[] current = SetString(TB_Text.Text);
             for (int i = current.Length; i < Bytes.Count; i++)
                 Bytes[i].Value = 0;
         }
 
+        private byte[] SetString(string text) => SAV.SetString(text, text.Length);
+        private string GetString() => SAV.GetString(Raw, 0, Raw.Length);
+
         // Helpers
-        private static Label GetLabel(string str) => new Label {Text = str, AutoSize = true};
-        private static NumericUpDown GetNUD(int min, int max, bool hex) => new NumericUpDown
+        private static Label GetLabel(string str) => new() {Text = str, AutoSize = true};
+
+        private static NumericUpDown GetNUD(int min, int max, bool hex) => new()
         {
             Maximum = max,
             Minimum = min,
@@ -187,16 +189,13 @@ namespace PKHeX.WinForms
             Margin = new Padding(0),
         };
 
-        private static ushort[] GetChars(int generation)
+        private static ushort[] GetChars(int generation) => generation switch
         {
-            switch (generation)
-            {
-                case 6:
-                case 7:
-                    return chars67;
-                default: return new ushort[0];
-            }
-        }
+            6 => chars67,
+            7 => chars67,
+            _ => Array.Empty<ushort>(), // Undocumented
+        };
+
         private static readonly ushort[] chars67 =
         {
             0xE081, 0xE082, 0xE083, 0xE084, 0xE085, 0xE086, 0xE087, 0xE08D,
